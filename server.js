@@ -7,7 +7,7 @@ var express = require('express');
     io = require('socket.io').listen(http);
 
 
-var index = require('./routes/index');
+var login = require('./routes/login');
 
 
 
@@ -16,7 +16,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hjs');
 
 
-app.use('/', index);
+app.use('/', login);
 
 http.listen(3000,function(){
     console.log('Server listening on :3000');
@@ -31,9 +31,9 @@ io.on('connection',function(socket){
     console.log('User connected');
     //socket syntax: ('event', function(msg){})
     //waits for the event
-    //Parámetro chat message: mandar mensaje
-    socket.on('chat message', function(data){
-        io.emit('chat message', {msg:data});
+    //Parámetro chat message: mandar mensaje en el tutorial era el id del formulario
+    socket.on('sendMessage', function(data){
+        io.emit('sendMessage', {msg:data});
     });
     socket.on('disconnect', function(){
         console.log('User disconnected');
