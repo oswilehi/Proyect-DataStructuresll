@@ -1,5 +1,7 @@
 /*Server serves at port 3000.
-socket.io: is a library used for real-time web chat  */
+socket.io: is a library used for real-time web chat 
+Forma de conectar nuestra base de datos JOnline con mongoose es a través de esta url:
+mongodb://localhost:27017/JOnline (nombre de la base de datos) */
 var express = require('express');
     app = express();
     path = require('path');
