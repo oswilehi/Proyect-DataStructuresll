@@ -8,6 +8,8 @@ var express = require('express');
 
 
 var login = require('./routes/login');
+var signup = require('./routes/signup');
+var chat = require('./routes/chat');
 
 
 
@@ -17,6 +19,20 @@ app.set('view engine', 'hjs');
 
 
 app.use('/', login);
+app.use('/signup', signup);
+app.use('/chat',chat);
+
+// catch 404 and forward to error handler
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('chat');
+});
+
+module.exports = router;
+  
 
 http.listen(3000,function(){
     console.log('Server listening on :3000');
