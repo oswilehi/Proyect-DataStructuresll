@@ -13,6 +13,9 @@ var login = require('./routes/login');
 var signup = require('./routes/signup');
 var chat = require('./routes/chat');
 
+// Conectar a la base de datos
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/JOnline');
 
 
 // view engine setup
@@ -21,8 +24,8 @@ app.set('view engine', 'hjs');
 
 
 app.use('/', login);
-app.use('/signup', signup);
-app.use('/chat',chat);
+app.use('/SignUp', signup);
+app.use('/Chat',chat);
 
 // catch 404 and forward to error handler
 var express = require('express');
