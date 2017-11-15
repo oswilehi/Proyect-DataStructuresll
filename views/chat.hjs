@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 
-<html ng-app="myApp">
+<html>
   <head>
-    
-      <script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <title>Login JOnline</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <style>
-      #textarea{
+      #chat{
         position: relative;
         width: 100%;
         float: left;
@@ -23,7 +24,9 @@
         height: 90%;
         overflow: auto;
       }
+      
     </style>
+   
   </head>
   <body>
     <div class="container">
@@ -32,8 +35,8 @@
       </div>
 
       <div id="content" class="row" style="height:70%;">
-        <div class="col-md-2"></div>
-          <div id="chatContent" class="col-md-6">
+        <div class="col-md-2 offset-md-3 col-sm-12"></div>
+          <div id="chatContent" class="col-md-6 ">
             <div class="panel panel-success">
               <div class="panel-heading">
                 CHAT
@@ -45,13 +48,26 @@
               <form id="sendMessage" class="input-group" style="text-align:center; margin:0 auto;">
                 <input id="message" class="form-control input-lg" type="text" autocomplete="off" >
                 <span class="input-group-btn">
-                  <button class="btn btn-primary" type ="submit">Send</button>
+                  <button class="btn btn-primary" type ="submit"><i class="fa fa-location-arrow" style="font-size:20px;color:white"></i></button>
+                  <button style="font-size:16px" class="btn btn-primary" type ="submit"><i class="fa fa-folder-open"></i></button>
                 </span>
               </form>
             </div>
           </div>
+          <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading"><i class="fa fa-circle" style="font-size:20px;color:green"></i>
+                  USERS
+                </div>
+                <div class="panel-body" id="users"></div>
+              </div>      
+            </div>
       </div>
-    </div>    
+      
+    </div>   
+    
+
+
     <!--Codigo jquery para mandar los mensajes-->
     <script type="text/javascript">
 
