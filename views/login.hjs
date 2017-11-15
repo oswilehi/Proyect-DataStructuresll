@@ -48,7 +48,7 @@
                   placeholder="Password" required>
               </div> <!--password-->
               <div class="form-group">
-                  <button type="submit" class="btn btn-success btn-lg btn-block" onclick="window.location.href='/chat'"/>Login</button> 
+                  <button type="submit" class="btn btn-success btn-lg btn-block" onclick="window.location.href='/Chat'"/>Login</button> 
               </div> <!--LOGIN-->
               <!--Register a new user-->
               <ul class="tab-group">
