@@ -1,5 +1,9 @@
 $(document).ready(function(){
-    
+    $('#signUp').click(function(){
+        event.preventDefault();
+
+        
+    });
 });
 
 //https://teamtreehouse.com/community/using-ajax-post-to-send-data-to-nodejs-server
