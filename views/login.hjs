@@ -4,30 +4,11 @@
   <meta charset="UTF-8">
   <title>Login/Logout animation concept</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-  
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
   <style>
-    body{
-      margin: 0;
-      padding: 0;
-      background: #34495E;
-      font-family: sans-serif;
-    }
-    .panel{
-      border: 0px;
-      background: rgba(0,0,0,0.5);
-      text-align: center;
-      padding-top: 50px;
-      padding-bottom:  50px;
-    }
+    
     
   </style>
 </head>
@@ -51,16 +32,12 @@
                   <button type="submit" class="btn btn-success btn-lg btn-block" onclick="window.location.href='/chat'"/>Login</button> 
               </div> <!--LOGIN-->
               <!--Register a new user-->
-              <ul class="tab-group">
-                  <li class="tab active"><a onclick="window.location.href='/SignUp'">Sign Up</a></li>
-                                    
-              </ul>
+                  <label class="tab active">¿Eres nuevo en JO? <a onclick="window.location.href='/SignUp'">Sign Up</a></label>                               
             </form>            
           </div>
         </div><!--panel default-->
       </div><!--col-->
     </div><!--row-->
-  </div><!--container-->
-
+  </div>
  </body>
 </html>
