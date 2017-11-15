@@ -10,16 +10,15 @@ router.get('/', function(req, res, next) {
   res.render('signup');
 });
 
-router.post('/Registrarse', function(req, res, next){
+router.post('/', function(req, res, next){
+
+  console.log(req, req.body.emailUser);
 
   var newUser = User({
-    email : req.body.email,
-    user : req.body.user,
+    email : req.body.emailUser,
+    user : req.body.userName,
     password : req.body.password
-  })
-  
-
-  console.log(newUser);
+  });
   /*newUser.save(function(error, result){
     if(error) throw error
     console.log("guardado")
