@@ -1,20 +1,18 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path');
 var messageModel = require('../schemas/messageSchema');
 var bodyParser = require('body-parser');
 var app = express();
-var path = require('path');
-var http = require('http').createServer(app); 
-var io = require('socket.io').listen(http);
 
 router.get('/', function(req, res, next) {
-  res.render('chat');
+    res.render('chat');
 });
+  
+module.exports =router;
 
-io.on('connection',function(soket){
-  socket.on('sendMessage', function(data){
-    io.sockets.emit('output', {msg:data});
-  })
+
+
   //send status
  /* sendStatus = function(s){
     soket.emit('status',s);
@@ -47,5 +45,5 @@ io.on('connection',function(soket){
       });
     }
   });*/
-});
-module.exports = router;
+//});
+//module.exports = router;

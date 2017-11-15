@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-mongoose.connect("mongodb://localhost:27017/JOnline");
+/*mongoose.connect("mongodb://localhost:27017/JOnline");
 mongoose.connection.on('open', function(ref){
     console.log("Connected to mongo server messages.");
 });
@@ -10,7 +10,7 @@ mongoose.connection.on('error', function(err){
     console.log(err);
 });
 
-mongoose.connect('mongodb://localhost/mongodb');
+mongoose.connect('mongodb://localhost/mongodb');*/
 var message = new Schema({
     message : String,
     sender : String,
