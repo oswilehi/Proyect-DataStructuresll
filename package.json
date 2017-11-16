@@ -10,14 +10,17 @@
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "edge": "^7.10.1",
     "express": "~4.15.5",
     "hjs": "~0.0.6",
+    "jsonwebtoken": "^8.1.0",
     "mongodb": "~3.4.10",
     "mongoose": "^4.13.2",
     "morgan": "~1.9.0",
     "nodemon": "^1.12.1",
     "serve-favicon": "~2.4.5",
     "sha256": "^0.2.0",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "socket.io-client": "^2.0.4"
   }
 }

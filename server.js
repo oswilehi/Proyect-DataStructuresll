@@ -13,7 +13,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var login = require('./routes/login');
 var signup = require('./routes/signup');
-var chat = require('./routes/Chat');   
+var chat = require('./routes/chat');   
 var mongoose = require('mongoose');
 var mongo =  mongoose.connect("mongodb://localhost:27017/JOnline").connection;
 

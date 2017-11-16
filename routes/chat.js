@@ -1,9 +1,45 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path');
-var messageModel = require('../schemas/messageSchema');
+
 var bodyParser = require('body-parser');
 var app = express();
+const client = require("socket.io").listen(4000).sockets;
+
+
+/*client.on('connection', function(){
+  var messageModel = require('../schemas/messageSchema');
+    sendStatus = function(s){
+      socket.emit('status',s);
+    }
+    
+    messageModel.find().limit(100).sort({_id:1}).toArray(function(err, res){
+        if (err) throw err;
+
+        socket.emit('output', res);
+    });
+
+    // Handle input events
+
+    socket.on('input', function(data){
+      let name = data.name;
+      let message = data.message;
+
+      // Check for name and message
+      if (name == "" || message == ""){
+        sendStatus('Please enter a name and a message');
+      }
+      else{
+          var newMessage = messageModel({
+          message : message,
+          sender : name,
+          receiver: "",
+          privateKey: ""
+        });
+        newMessage.save();
+      }
+    })
+});*/
 
 router.get('/', function(req, res, next) {
     res.render('chat');

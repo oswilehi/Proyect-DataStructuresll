@@ -1,3 +1,4 @@
+
 function loadSignUp(visible){
 
     if (visible)
@@ -7,4 +8,8 @@ function loadSignUp(visible){
         document.getElementById("alertMessage").style.visibility = 'hidden';
     }
         
+}
+
+function setSessionStorage(jwt){
+    window.sessionStorage.token = jwt;
 }
