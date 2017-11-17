@@ -27,14 +27,22 @@ router.post('/',function(req,res,next){
     res.status(204).end();
 });
 router.get('/:content', function(req, res, next){
-    console.log("está buscando ambos usuarios");
-    var root = req.params;
     
-    Message.find({sender: root, receiver: req.body.receiver }, function(error, data){
+    let values = req.params.content.split("&&");
+    console.log("está buscando ambos usuarios:  " + values[0] + " " + values[1]);
+    Message.find({sender: values[0], receiver: values[1] }, function(error, data){
         if(error) throw error;
-        else
-            res.sender('chat', {arrayMsg: data});
+        else if(!data.length){
+            console.log("DB vacía, no hay chats");
+            res.render('chat', {arrayMsg: "0"});
+        }            
+        else{
+            console.log("Db con mensajes entre " + values[0] + " y " +values[1]);
+            res.render('chat', {arrayMsg: data});
+            
+        }
+            
     });
-});
+}); 
 
 module.exports =router;

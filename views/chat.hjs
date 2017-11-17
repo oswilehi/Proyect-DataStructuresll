@@ -90,16 +90,20 @@
 
                 $listUsers.click(function(e){
                   e.preventDefault();
+                  
                   reciever = e.target.parentNode.id;
+                  alert(x + " " + reciever);
                   if(x!= '' && reciever!= ''){ //usuario y amigo chekeados
+                    
                     $.ajax({
                       method :'GET',
-                      url: '/:content',
-                      data :JSON.stringify({}),
+                      url: '/Chat/'+ x +'&&' + reciever,
+                      //data :JSON.stringify({sender: x, recep: reciever}),
                       dataType: 'json',
                       contentType:'application/json; charset=UTF-8',
                       success : function(){
-
+                        alert("Si funcionó");
+                        
                       },
                       error:function(){
                         
@@ -146,7 +150,7 @@
                   $listUsers.html('');                  
                   for (let i=0; i<users.length; i++) 
                   {
-                    let listOnlineUsers = '<li id="' + users[i] + '"><a href="/Chat/' + users[i]+ '/'+x+'">'+users[i]+'</a></li>';
+                    let listOnlineUsers = '<li id="' + users[i] + '"><a href="/Chat/">'+users[i]+'</a></li>';
                     $listUsers.append(listOnlineUsers);
                   }
                   
@@ -158,7 +162,7 @@
                */
                socket.on('newUser', function (nuser) {
                   userLink = nuser;
-                  var linuser = '<li id="'+ nuser +'" + name="' + nuser + '">'+ '<a href="/Chat/'+ nuser +'/'+x+'">' + nuser+'</a></li>';
+                  var linuser = '<li id="'+ nuser +'" + name="' + nuser + '">'+ '<a href="/Chat/">' + nuser+'</a></li>';
                   $listUsers.append(linuser);
                 });
       
@@ -184,6 +188,8 @@
                * informe a todos los usuarios que estamos en linea.
                */
                 socket.emit('newUser', x);
+
+                socket.emit('historial');
       
                 /**
                * Cuando el servidor envia los ultimos mensajes registrados
@@ -191,12 +197,8 @@
                * Cada mensaje se agrega a la lista de mensajes en la vista
                * de la conversación.
                */
-                socket.on('latest messages', function(messages){
-                  for(var i = messages.length-1; i>=0; i--){
-                    appendMessage(messages[i]);
-                  };
-                });
-                socket.on('latest messages', function (messages) {
+               
+                socket.on('historial', function (messages) {
                   for (var i = messages.length - 1; i >= 0; i--) {
                     var date = moment(new Date(msg.date)).calendar();
                     var html = '<div class="small-11">' +
@@ -216,10 +218,10 @@
                 $message.keyup(function (evt) {
                   if (evt.keyCode === 13) {
                     var nmsg = {
-                      username : user._id,
+                      username : x,
                       message : $message.val()
                     }
-                    socket.emit('chat message', nmsg);
+                    socket.emit('output', nmsg);
                     $message.val('');
                   }
                 });

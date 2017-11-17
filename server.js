@@ -35,7 +35,6 @@ io.sockets.on('connection', function(socket){
      * y devuelve al cliente el mismo mensaje,
      */
     socket.on('sendMessage', function(data){
-      //socket.broadcast.emit('ready',data);
       io.sockets.emit('output', {msg:data});
       
     });
@@ -72,6 +71,10 @@ io.sockets.on('connection', function(socket){
         onlineUsers.push(nuser);
         io.emit('newUser', nuser);
       });
+
+    socket.on('historial', function(messages){
+        io.sockets.emit('historial', messages)
+    });
   
   });
 
