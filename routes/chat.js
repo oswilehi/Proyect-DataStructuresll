@@ -20,14 +20,14 @@ router.post('/',function(req,res,next){
     var messageEncrypted;
     var cifrar = edge.func({
         // Ruta de la carpeta donde se encuentra la dll
-        assemblyFile: 'DLLs/Cifrar2.dll',
+        assemblyFile: 'DLLs/Cifrar3.dll',
         // namespace y nombre de la clase
         typeName : "Cifrar.RSA",
         methodName : "encryptWord"
       })
     
       var descifrar = edge.func({
-        assemblyFile: 'DLLS/Cifrar.dll',
+        assemblyFile: 'DLLS/Cifrar3.dll',
         typeName : "Cifrar.RSA",
         methodName : "deencryptedWord"
       })
@@ -53,8 +53,7 @@ router.post('/',function(req,res,next){
     });
     res.status(204).end();
 });
-router.get('/:content', function(req, res, next){
-    
+router.get('/:content', function(req, res, next){    
     let values = req.params.content.split("&&");
     console.log("está buscando ambos usuarios:  " + values[0] + " " + values[1]);
     Message.find({sender: values[0], receiver: values[1] }, function(error, data){
@@ -65,10 +64,8 @@ router.get('/:content', function(req, res, next){
         }            
         else{
             console.log("Db con mensajes entre " + values[0] + " y " +values[1]);
-            res.render('chat', {arrayMsg: data});
-            
-        }
-            
+            res.render('chat', {arrayMsg: data});           
+        }            
     });
 }); 
 
