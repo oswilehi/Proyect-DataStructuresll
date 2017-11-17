@@ -45,6 +45,7 @@
               <div class="panel-heading">
                 CHAT
               </div>              
+              <div id="hiddenM" style="display:none;">{{arrayMsg}} </div>
               <div id="chat" class="panel-body"></div> <!--Contenido del chat-->
             </div>
     <!--Formulario para mandar los mensajes-->
@@ -76,8 +77,12 @@
     <script type="text/javascript">
       
              var socket = io.connect("http://localhost:3000");
+             //Usuario conectado/ cliente
              var x = $("#hidden").html(); 
-             var reciever = ""; //El usuario que se selecciona
+             //El usuario que se selecciona
+             var reciever = ""; 
+             //array de mensajes entre ambos sujetos
+             var latestMessages = $('#hiddenM').html();
             
               jQuery(function($){
                 
@@ -88,6 +93,15 @@
                 var $listUsers=$('#users'); //ul
                 var $list = $('#usersDiv'); //div
 
+                //Agrega mensajes al div de chat correspondiente
+                function appendMessages(msg){
+                  var date = moment(new Date(msg.date)).calendar();
+                  var html = '<div class="small-11">' +'<blockquote><h6>' + msg.username + ':</h6>' + 
+                           msg.message +'<cite>' + date + '</cite></blockquote>' + '</div>';
+                  $chat.append(html);
+
+                }
+                //Evento para mostrar mensajes
                 $listUsers.click(function(e){
                   e.preventDefault();
                   
@@ -98,11 +112,10 @@
                     $.ajax({
                       method :'GET',
                       url: '/Chat/'+ x +'&&' + reciever,
-                      //data :JSON.stringify({sender: x, recep: reciever}),
                       dataType: 'json',
                       contentType:'application/json; charset=UTF-8',
                       success : function(){
-                        alert("Si funcionó");
+                        socket.emit('historial',latestMessages);
                         
                       },
                       error:function(){
@@ -110,9 +123,7 @@
                       }
                     });
                   }
-                });
-                
-
+                }); 
 
                 //se envía el mensaje al servidor con el nombre sendMessage
                 $messageForm.submit(function(e){ 
@@ -136,15 +147,15 @@
                   }
                 });
                 
-                socket.on('output', function(data){
-                    $chat.append('- '+ data.msg+ "<br>");
+                socket.on('sendMessage', function(data){
+                    appendMessages(data);
                   });
                 /**
-             * Cuando el servidor envia la lista de usuarios conectados.
-             * se reciben a través de este evento,
-             * cada usuario se agrega a la lista de usuarios online
-             * @param  {[type]} users Array con usuarios conectados en el momento
-             */
+               * Cuando el servidor envia la lista de usuarios conectados.
+               * se reciben a través de este evento,
+               * cada usuario se agrega a la lista de usuarios online
+               * @param  users Array con usuarios conectados en el momento
+               */
                 socket.on('onlineUsers', function (users) {
                   console.log(users.length + ' users on');
                   $listUsers.html('');                  
@@ -158,7 +169,7 @@
                 /**
                * Listener para evento 'new user', el servidor lo emite
                * cuando un usuario se ha conectado
-               * @param  {[json]} nuser el usuario recien conectado
+               * @param nuser el usuario recien conectado
                */
                socket.on('newUser', function (nuser) {
                   userLink = nuser;
@@ -170,13 +181,43 @@
                * Cada vez que un usuario se desconecta, debemos eliminarlo
                * de la lista de usuarios conectados, el servidor envia un mensaje
                * con este evento para informarnos sobre un usuario desconectado.
-               * @param  {[json]} nuser El usuarios que se acaba de desconectar
+               * @param nuser El usuarios que se acaba de desconectar
                */
                 socket.on('remove user', function (nuser) {
                   socket.emit('onlineUsers');
                   $('#' + nuser).remove();
                 });
       
+                /**
+                 * Emitimos un evento de tipo 'coutput' cada vez
+                 * que se presiona 'Enter' en el input  y enviamos
+                 * su contenido como mensaje al servidor.
+                 */
+                 $message.keyup(function (evt) {
+                  if (evt.keyCode === 13) {
+                    var nmsg = {
+                      username : x,
+                      message : $message.val()
+                    }
+                    socket.emit('output', nmsg);
+                    $message.val('');
+                  }
+                });
+
+
+                /**
+               * Cuando el servidor envia los ultimos mensajes registrados
+               * se reciben a través de este evento.
+               * Cada mensaje se agrega a la lista de mensajes en la vista
+               * de la conversación.
+               */               
+               socket.on('historial', function (messages) {
+                  for (var i = messages.length - 1; i >= 0; i--) {
+                    appendMessages(messages[i]);
+                  };
+                });
+
+
                 /**
                * Solicitamos al servidor la lista de usuarios conectados
                * en este momento.
@@ -189,42 +230,9 @@
                */
                 socket.emit('newUser', x);
 
-                socket.emit('historial');
-      
-                /**
-               * Cuando el servidor envia los ultimos mensajes registrados
-               * se reciben a través de este evento.
-               * Cada mensaje se agrega a la lista de mensajes en la vista
-               * de la conversación.
-               */
-               
-                socket.on('historial', function (messages) {
-                  for (var i = messages.length - 1; i >= 0; i--) {
-                    var date = moment(new Date(msg.date)).calendar();
-                    var html = '<div class="small-11">' +
-                            '<blockquote><h6>' + messages[i].sender + ':</h6>' + 
-                            msg.message +
-                            '<cite>' + date + '</cite></blockquote>' +
-                            '</div>';
-                              
-                    $chat.append( html );
-                  };
-                });
-                /**
-                 * Emitimos un evento de tipo 'chat message' cada vez
-                 * que se presiona 'Enter' en el textarea y enviamos
-                 * su contenido como mensaje al servidor.
-                 */
-                $message.keyup(function (evt) {
-                  if (evt.keyCode === 13) {
-                    var nmsg = {
-                      username : x,
-                      message : $message.val()
-                    }
-                    socket.emit('output', nmsg);
-                    $message.val('');
-                  }
-                });
+                socket.emit('historial'); 
+                
+                
                
               });
           </script>

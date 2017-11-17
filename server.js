@@ -35,7 +35,7 @@ io.sockets.on('connection', function(socket){
      * y devuelve al cliente el mismo mensaje,
      */
     socket.on('sendMessage', function(data){
-      io.sockets.emit('output', {msg:data});
+      io.sockets.emit('sendMessage', {msg:data});
       
     });
 
