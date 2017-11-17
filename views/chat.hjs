@@ -46,7 +46,7 @@
                 CHAT
               </div>              
               <div id="hiddenM" style="display:none;">{{arrayMsg}} </div>
-              <div id="chat" class="panel-body"></div> <!--Contenido del chat-->
+              <div id="chat" class="panel-body">{{arrayMsg}}</div> <!--Contenido del chat-->
             </div>
     <!--Formulario para mandar los mensajes-->
             <div>
@@ -83,7 +83,7 @@
              var reciever = ""; 
              //array de mensajes entre ambos sujetos
              var latestMessages = $('#hiddenM').html();
-            
+           
               jQuery(function($){
                 
                 //son nuestros divs que forman nuestro chat
@@ -115,6 +115,7 @@
                       dataType: 'json',
                       contentType:'application/json; charset=UTF-8',
                       success : function(){
+                        alert(latestMessages);
                         socket.emit('historial',latestMessages);
                         
                       },
@@ -172,7 +173,7 @@
                * @param nuser el usuario recien conectado
                */
                socket.on('newUser', function (nuser) {
-                  userLink = nuser;
+                 
                   var linuser = '<li id="'+ nuser +'" + name="' + nuser + '">'+ '<a href="/Chat/">' + nuser+'</a></li>';
                   $listUsers.append(linuser);
                 });
@@ -199,7 +200,7 @@
                       username : x,
                       message : $message.val()
                     }
-                    socket.emit('output', nmsg);
+                    socket.emit('sendMessage', nmsg);
                     $message.val('');
                   }
                 });
