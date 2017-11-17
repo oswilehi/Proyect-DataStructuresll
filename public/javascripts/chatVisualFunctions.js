@@ -10,6 +10,7 @@ function loadSignUp(visible){
         
 }
 
-function setSessionStorage(jwt){
-    window.sessionStorage.token = jwt;
+function setSessionStorage(token){
+    window.sessionStorage.token = token;
+    console.log(window.sessionStorage);
 }

@@ -27,8 +27,7 @@ router.post('/', function(req, res, next){
       // Si la contrasena typeada coincide con la guardada se le permite el acceso al chat
       if (sha256(req.body.password) === data[0].password){
           var token = jwt.sign({user: req.body.username}, password);
-          console.log(token);
-          res.render('chat');
+          res.render('chat', {token : token.toString()});
       }
           
       else
