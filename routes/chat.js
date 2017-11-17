@@ -20,7 +20,7 @@ router.post('/',function(req,res,next){
     var messageEncrypted;
     var cifrar = edge.func({
         // Ruta de la carpeta donde se encuentra la dll
-        assemblyFile: 'DLLs/Cifrar.dll',
+        assemblyFile: 'DLLs/Cifrar2.dll',
         // namespace y nombre de la clase
         typeName : "Cifrar.RSA",
         methodName : "encryptWord"
@@ -34,18 +34,17 @@ router.post('/',function(req,res,next){
     
       console.log(req.body.message);
       cifrar(req.body.message, function(error, result) {
-          descifrar(result, function (err, res){
             if (error) throw error;
-            messageEncrypted = res;
-          })        
+            messageEncrypted = result;                
       });
 
+      var values = messageEncrypted.split("|");
     var newMessage = Message({
-        message : messageEncrypted,
+        message : values[1],
         sender : req.body.sender,
         receiver: req.body.receiver,
         date: Date.now(),
-        privateKey :""
+        privateKey : values[0]
     });
     newMessage.save(function(error, result){
         if(error)throw error;
