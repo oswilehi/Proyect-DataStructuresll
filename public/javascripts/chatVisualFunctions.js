@@ -13,6 +13,8 @@ function loadSignUp(visible){
 function setSessionStorage(token, actualUser){
     window.sessionStorage.token = token;
     window.sessionStorage.actualUser = actualUser;
+    //window.location.href="/chat/getLatest";
+    // document.location.href=  "/JWT/" + password +"&&"+ content;
     console.log(window.sessionStorage);
     
 }

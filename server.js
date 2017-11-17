@@ -30,28 +30,28 @@ mongo.once('open', function(){
 
 io.sockets.on('connection', function(socket){
     console.log("new user connected");
-    
     /**
      * Evento que recibe de parámetro el mensaje (data) escrito desde el cliente
      * y devuelve al cliente el mismo mensaje,
      */
     socket.on('sendMessage', function(data){
       //socket.broadcast.emit('ready',data);
-      io.sockets.emit('output', {msg:data})
+      io.sockets.emit('output', {msg:data});
       
     });
+
+
     /**
      * Cada nuevo cliente solicita mediante este evento
-    * los ultimos mensajes registrados en el historial
-    socket.on('latest messages', function () {
-       // messagesDAO.getLatest(50, function (err, messages) {
+    * los ultimos mensajes registrados en el historial  
+    socket.on('latestMessages',function(){
+        //llamar el método que retorna los mensajes de la base GET/CHAT/EMISOR/RECEPTOR
         
-          if (err) console.log('Error getting messages from history');
-          socket.emit('latest messages', messages);
-        });
-      });
-
+        socket.emit('latestMessages', dataMsg);
+    })  
     */
+    
+
     
     /**
      * Evento que devuelve la lista de usuarios
@@ -61,6 +61,8 @@ io.sockets.on('connection', function(socket){
     socket.on('onlineUsers', function () {
         socket.emit('onlineUsers', onlineUsers);
       });
+
+
     /**
      * Evento desconectar, mandamos mensaje a consola.     
     */
@@ -70,8 +72,8 @@ io.sockets.on('connection', function(socket){
         console.log("PRUEBA: " + onlineUsers);
         io.emit('remove user', socket.user);
         console.log('JOffline: user disconnected');
-      
       });
+
      
     /**
      * Evento que se emite cuando un nuevo cliente se conecta e

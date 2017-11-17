@@ -6,11 +6,12 @@ var Message = require('../schemas/messageSchema');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('chat');
+    res.render('chat', {mgs:""});
 });
+
 //Guardar mensajes en la base de datos
 router.post('/',function(req,res,next){
-    
+    console.log('Entró a registrar el nuevo msg');
     var newMessage = Message({
         message : req.body.message,
         sender : "String",
@@ -23,36 +24,7 @@ router.post('/',function(req,res,next){
         console.log("The message was succesfull added");
         console.log(result);
     });
-    res.redirect('/');
+    res.status(204).end();
 });
-router.get('/getLatest',function(req,res,next){
-    var specifications ={
-        'sort':[['date','desc']],
-        'limit':70
-    };
-    Message.find({},specifications).toArray(function(err,data){
-        if(err) {
-            console.log('There was an error (mensajes)');
-            return;
-        }
-        else {
-            res.render('chat', {mgs:data});
-        }
-
-    })
-});
-function GetLatestMessages(limit, callback){
-    var specifications ={
-        'sort':[['date','desc']],
-        'limit':limit
-    };
-    Message.find({},specifications).toArray(function(err,data){
-        if(err) return callback(err, null);
-        else return callback(null,err);
-
-    })
-
-}
-
 
 module.exports =router;
