@@ -48,7 +48,7 @@ router.post('/',function(req,res,next){
     });
     newMessage.save(function(error, result){
         if(error)throw error;
-        console.log("The message was succesfull added");
+        console.log("The message was succesfully added");
         console.log(result);
     });
     res.status(204).end();
