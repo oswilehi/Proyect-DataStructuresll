@@ -14,4 +14,5 @@ function setSessionStorage(token, actualUser){
     window.sessionStorage.token = token;
     window.sessionStorage.actualUser = actualUser;
     console.log(window.sessionStorage);
+    
 }

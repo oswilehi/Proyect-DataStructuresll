@@ -19,6 +19,7 @@
 
    
     <script src="/javascripts/chatVisualFunctions.js"></script>
+    <script src="js/message.js"></script>
     <style>
       #chat{
         position: relative;
@@ -45,6 +46,7 @@
               <div class="panel-heading">
                 CHAT
               </div>
+              
               <div id="chat" class="panel-body"></div> <!--Contenido del chat-->
             </div>
     <!--Formulario para mandar los mensajes-->
@@ -63,7 +65,8 @@
                 <div class="panel-heading"><i class="fa fa-circle" style="font-size:20px;color:green"></i>
                   USERS
                 </div>
-                <div class="panel-body" id="users"></div>
+                <div id="hidden" style="display:none;">{{actualUser}} </div>
+                <div class="panel-body" id="users" ></div>                                   
               </div>      
             </div>
       </div>
@@ -76,14 +79,18 @@
     <script type="text/javascript">
 
        var socket = io.connect("http://localhost:3000");
-       var userdata = {};
-     
+       var x = $("#hidden").html(); 
+       
         jQuery(function($){
-         
+          
+          //son nuestros divs que forman nuestro chat
           var $messageForm = $('#sendMessage');
           var $message = $('#message');
           var $chat =$('#chat'); 
           var $listUsers=$('#users');
+          
+       
+            
           //se envía el mensaje al servidor con el nombre sendMessage
           $messageForm.submit(function(e){
             e.preventDefault();
@@ -106,7 +113,7 @@
             console.log(users.length + ' users on');
             for (let i=0; i<users.length; i++) 
             {
-              let listOnlineUsers = '<li id="' + users[i]._id + '">' + users[i]._id + '</li>';
+              let listOnlineUsers = '<li id="' + users[i] + '">' + users[i]+ '</li>';
               $listUsers.append(listOnlineUsers);
             }
           });
@@ -116,7 +123,7 @@
          * @param  {[json]} nuser el usuario recien conectado
          */
           socket.on('newUser', function (nuser) {
-            var linuser = '<li id="' + nuser._id + '">'+ nuser._id + '</li>';
+            var linuser = '<li id="'+ nuser +'">'+ nuser + '</li>';
             $listUsers.append(linuser);
           });
 
@@ -127,7 +134,8 @@
          * @param  {[json]} nuser El usuarios que se acaba de desconectar
          */
           socket.on('remove user', function (nuser) {
-            $('#' + nuser._id).remove();
+            alert(nuser);
+            $('#' + nuser).remove();
           });
 
           /**
@@ -140,9 +148,47 @@
          * Emitimos el evento 'new user' para que el servidor
          * informe a todos los usuarios que estamos en linea.
          */
-          socket.emit('newUser', user);
+          socket.emit('newUser', x);
 
-
+          /**
+         * Cuando el servidor envia los ultimos mensajes registrados
+         * se reciben a través de este evento.
+         * Cada mensaje se agrega a la lista de mensajes en la vista
+         * de la conversación.
+         */
+          socket.on('latest messages', function(messages){
+            for(var i = messages.length-1; i>=0; i--){
+              appendMessage(messages[i]);
+            };
+          });
+          socket.on('latest messages', function (messages) {
+            for (var i = messages.length - 1; i >= 0; i--) {
+              var date = moment(new Date(msg.date)).calendar();
+              var html = '<div class="small-11">' +
+                      '<blockquote><h6>' + messages[i].sender + ':</h6>' + 
+                      msg.message +
+                      '<cite>' + date + '</cite></blockquote>' +
+                      '</div>';
+                        
+              $chat.append( html );
+            };
+          });
+          /**
+           * Emitimos un evento de tipo 'chat message' cada vez
+           * que se presiona 'Enter' en el textarea y enviamos
+           * su contenido como mensaje al servidor.
+           */
+          $message.keyup(function (evt) {
+            if (evt.keyCode === 13) {
+              var nmsg = {
+                username : user._id,
+                message : $message.val()
+              }
+              socket.emit('chat message', nmsg);
+              $message.val('');
+            }
+          });
+         
         });
     </script>
   </body>
