@@ -40,19 +40,6 @@ io.sockets.on('connection', function(socket){
       
     });
 
-
-    /**
-     * Cada nuevo cliente solicita mediante este evento
-    * los ultimos mensajes registrados en el historial  
-    socket.on('latestMessages',function(){
-        //llamar el método que retorna los mensajes de la base GET/CHAT/EMISOR/RECEPTOR
-        
-        socket.emit('latestMessages', dataMsg);
-    })  
-    */
-    
-
-    
     /**
      * Evento que devuelve la lista de usuarios
      * conectados en el chat. Le mandamos por parámetros

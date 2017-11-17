@@ -64,7 +64,10 @@
                   USERS
                 </div>
                 <div id="hidden" style="display:none;">{{actualUser}} </div>
-                <div class="panel-body" id="users" ></div>                                   
+                <div class="panel-body" id="usersDiv" >
+                  <ul id="users">
+                  </ul>               
+                </div>                                   
               </div>      
             </div>
       </div>      
@@ -74,36 +77,58 @@
       
              var socket = io.connect("http://localhost:3000");
              var x = $("#hidden").html(); 
-             
+             var reciever = ""; //El usuario que se selecciona
+            
               jQuery(function($){
                 
                 //son nuestros divs que forman nuestro chat
                 var $messageForm = $('#sendMessage');
                 var $message = $('#message');
                 var $chat =$('#chat'); 
-                var $listUsers=$('#users');
-                
-             
-                  
-                //se envía el mensaje al servidor con el nombre sendMessage
-                $messageForm.submit(function(e){ //FUCNTION SHOW DIV()
-                  e.preventDefault();
+                var $listUsers=$('#users'); //ul
+                var $list = $('#usersDiv'); //div
 
+                $listUsers.click(function(e){
+                  e.preventDefault();
+                  reciever = e.target.parentNode.id;
+                  if(x!= '' && reciever!= ''){ //usuario y amigo chekeados
+                    $.ajax({
+                      method :'GET',
+                      url: '/:content',
+                      data :JSON.stringify({}),
+                      dataType: 'json',
+                      contentType:'application/json; charset=UTF-8',
+                      success : function(){
+
+                      },
+                      error:function(){
+                        
+                      }
+                    });
+                  }
+                });
+                
+
+
+                //se envía el mensaje al servidor con el nombre sendMessage
+                $messageForm.submit(function(e){ 
+                  e.preventDefault();
+                  
                   if($message.val()!= '') {
                     $.ajax({
-                    method: 'POST',
-                    url: '/Chat', //SENDER, RENDER
-                    data: JSON.stringify({}),
-                    dataType: 'json',
-                    contentType: 'application/json; charset=UTF-8',
-                    success: function() {
-                      socket.emit('sendMessage',$message.val());
-                      $message.val('');  
-                    }, error: function() {
-                      console.error('error');
-                      $message.val('');
-                    }
-                  });            
+                      method: 'POST',
+                      url: '/Chat', 
+                      data: JSON.stringify({}),
+                      dataType: 'json',
+                      contentType: 'application/json; charset=UTF-8',
+                      success: function() {
+                        socket.emit('sendMessage',$message.val());
+                        $message.val('');  
+                      }, error: function() {
+                        console.error('error');
+                        $message.val('');
+                      }
+                    });            
                   }
                 });
                 
@@ -118,20 +143,22 @@
              */
                 socket.on('onlineUsers', function (users) {
                   console.log(users.length + ' users on');
-                  $listUsers.html('');
+                  $listUsers.html('');                  
                   for (let i=0; i<users.length; i++) 
                   {
-                    let listOnlineUsers = '<li id="' + users[i] + '">' + users[i]+ '</li>';
+                    let listOnlineUsers = '<li id="' + users[i] + '"><a href="/Chat/' + users[i]+ '/'+x+'">'+users[i]+'</a></li>';
                     $listUsers.append(listOnlineUsers);
                   }
+                  
                 });
                 /**
                * Listener para evento 'new user', el servidor lo emite
                * cuando un usuario se ha conectado
                * @param  {[json]} nuser el usuario recien conectado
                */
-                socket.on('newUser', function (nuser) {
-                  var linuser = '<li id="'+ nuser +'" + name="' + nuser + '">'+ '<a href="showMessages()">'+ nuser + '</li></a>';
+               socket.on('newUser', function (nuser) {
+                  userLink = nuser;
+                  var linuser = '<li id="'+ nuser +'" + name="' + nuser + '">'+ '<a href="/Chat/'+ nuser +'/'+x+'">' + nuser+'</a></li>';
                   $listUsers.append(linuser);
                 });
       

@@ -14,10 +14,10 @@ router.post('/',function(req,res,next){
     console.log('Entró a registrar el nuevo msg');
     var newMessage = Message({
         message : req.body.message,
-        sender : "String",
-        receiver: "String",
+        sender : req.body.sender,
+        receiver: req.body.receiver,
         date: Date.now(),
-        privateKey :"f"        
+        privateKey :""
     });
     newMessage.save(function(error, result){
         if(error)throw error;
@@ -25,6 +25,16 @@ router.post('/',function(req,res,next){
         console.log(result);
     });
     res.status(204).end();
+});
+router.get('/:content', function(req, res, next){
+    console.log("está buscando ambos usuarios");
+    var root = req.params;
+    
+    Message.find({sender: root, receiver: req.body.receiver }, function(error, data){
+        if(error) throw error;
+        else
+            res.sender('chat', {arrayMsg: data});
+    });
 });
 
 module.exports =router;
