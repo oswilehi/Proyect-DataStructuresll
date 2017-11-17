@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+//Edge
+var edge = require('edge');
+
 //Schema
 var Message = require('../schemas/messageSchema');
 
@@ -12,8 +15,33 @@ router.get('/', function(req, res, next) {
 //Guardar mensajes en la base de datos
 router.post('/',function(req,res,next){
     console.log('Entró a registrar el nuevo msg');
+    console.log(req.body);
+
+    var messageEncrypted;
+    var cifrar = edge.func({
+        // Ruta de la carpeta donde se encuentra la dll
+        assemblyFile: 'DLLs/Cifrar.dll',
+        // namespace y nombre de la clase
+        typeName : "Cifrar.RSA",
+        methodName : "encryptWord"
+      })
+    
+      var descifrar = edge.func({
+        assemblyFile: 'DLLS/Cifrar.dll',
+        typeName : "Cifrar.RSA",
+        methodName : "deencryptedWord"
+      })
+    
+      console.log(req.body.message);
+      cifrar(req.body.message, function(error, result) {
+          descifrar(result, function (err, res){
+            if (error) throw error;
+            messageEncrypted = res;
+          })        
+      });
+
     var newMessage = Message({
-        message : req.body.message,
+        message : messageEncrypted,
         sender : req.body.sender,
         receiver: req.body.receiver,
         date: Date.now(),
