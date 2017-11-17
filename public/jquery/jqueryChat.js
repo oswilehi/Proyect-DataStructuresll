@@ -6,9 +6,9 @@ $(document).ready(function(){
             var token = jwt.sign({ user: $('#username').val()}, password);
             window.sessionStorage.token = token;
             console.log(window.sessionStorage.token);
-        });*/
+        });
         
-    });
+    });*/
 });
 
 //https://teamtreehouse.com/community/using-ajax-post-to-send-data-to-nodejs-server
