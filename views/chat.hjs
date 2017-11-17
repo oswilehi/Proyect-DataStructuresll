@@ -5,7 +5,6 @@
     <script src="/socket.io/socket.io.js"></script>
     <title>Login JOnline</title>
     <!-- Latest compiled and minified CSS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Optional theme -->
@@ -36,7 +35,7 @@
       </div>
 
       <div id="content" class="row" style="height:70%;">
-        <div class="col-md-2 offset-md-3 col-sm-12"></div>
+        <div class="col-md-2"></div>
           <div id="chatContent" class="col-md-6 ">
             <div class="panel panel-success">
               <div class="panel-heading">
@@ -46,11 +45,11 @@
             </div>
     <!--Formulario para mandar los mensajes-->
             <div>
-              <form id="sendMessage" class="input-group" style="text-align:center; margin:0 auto;">
-                <input id="message" class="form-control input-lg" type="text" autocomplete="off" >
+              <form action="/Chat" method="post" id="sendMessage" class="input-group" style="text-align:center; margin:0 auto;">
+                <input id="message" name="message" class="form-control input-lg" type="text" autocomplete="off" >
                 <span class="input-group-btn">
-                  <button class="btn btn-primary"><i class="fa fa-location-arrow" style="font-size:20px;color:white"></i></button>
-                  <button style="font-size:16px" class="btn btn-primary"><i class="fa fa-folder-open"></i></button>
+                  <button class="btn btn-primary" type ="submit"><i class="fa fa-location-arrow" style="font-size:20px;color:white"></i></button>
+                  <button style="font-size:16px" class="btn btn-primary" type ="submit"><i class="fa fa-folder-open"></i></button>
                 </span>
               </form>
             </div>
@@ -73,13 +72,15 @@
     <script type="text/javascript">
 
        var socket = io.connect("http://localhost:3000");
+       var userdata = {{userdata}};
      
         jQuery(function($){
          
           var $messageForm = $('#sendMessage');
           var $message = $('#message');
           var $chat =$('#chat'); 
-
+          var $listUsers=$('#users');
+          //se envía el mensaje al servidor con el nombre sendMessage
           $messageForm.submit(function(e){
             e.preventDefault();
             if($message.val()!= ''){
@@ -91,6 +92,52 @@
           socket.on('output', function(data){
               $chat.append('- '+ data.msg+ "<br>");
             });
+          /**
+       * Cuando el servidor envia la lista de usuarios conectados.
+       * se reciben a través de este evento,
+       * cada usuario se agrega a la lista de usuarios online
+       * @param  {[type]} users Array con usuarios conectados en el momento
+       */
+          socket.on('onlineUsers', function (users) {
+            console.log(users.length + ' users on');
+            for (let i=0; i<users.length; i++) 
+            {
+              let listOnlineUsers = '<li id="' + users[i]._id + '">' + users[i]._id + '</li>';
+              $listUsers.append(listOnlineUsers);
+            }
+          });
+          /**
+         * Listener para evento 'new user', el servidor lo emite
+         * cuando un usuario se ha conectado
+         * @param  {[json]} nuser el usuario recien conectado
+         */
+          socket.on('newUser', function (nuser) {
+            var linuser = '<li id="' + nuser._id + '">'+ nuser._id + '</li>';
+            $listUsers.append(linuser);
+          });
+
+          /**
+         * Cada vez que un usuario se desconecta, debemos eliminarlo
+         * de la lista de usuarios conectados, el servidor envia un mensaje
+         * con este evento para informarnos sobre un usuario desconectado.
+         * @param  {[json]} nuser El usuarios que se acaba de desconectar
+         */
+          socket.on('remove user', function (nuser) {
+            $('#' + nuser._id).remove();
+          });
+
+          /**
+         * Solicitamos al servidor la lista de usuarios conectados
+         * en este momento.
+         */
+          socket.emit('onlineUsers');
+
+          /**
+         * Emitimos el evento 'new user' para que el servidor
+         * informe a todos los usuarios que estamos en linea.
+         */
+          socket.emit('newUser', user);
+
 
         });
     </script>

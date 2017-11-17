@@ -17,9 +17,14 @@ var chat = require('./routes/chat');
 var mongoose = require('mongoose');
 var mongo =  mongoose.connect("mongodb://localhost:27017/JOnline").connection;
 
+//areglo que guardará el nombre de todos los usuarios conectados
+var onlineUsers=[];
+//modulo message.js para obtener los mensajes recientes
+var objectMessage = require('./routes/messages').message;
+
 //conexión a la base de datos
 mongo.on('error',function(err){
-    console.log(err.message);
+    console.log("Error to connect: "+err.message);
 });
 mongo.once('open', function(){
     console.log("Connected to mongo server.");
@@ -27,15 +32,42 @@ mongo.once('open', function(){
 
 io.sockets.on('connection', function(socket){
     console.log("new user connected");
-    
+    var messageDAO = new objectMessage();
+    /**
+     * Evento que recibe de parámetro el mensaje (data) escrito desde el cliente
+     * y devuelve al cliente el mismo mensaje,
+     */
     socket.on('sendMessage', function(data){
       //socket.broadcast.emit('ready',data);
       io.sockets.emit('output', {msg:data})
       
     });
-    //se desconectó el usuario
+    /**
+     * Evento que devuelve la lista de usuarios
+     * conectados en el chat. Le mandamos por parámetros
+     * el arreglo creado arriba.
+     */
+    socket.on('onlineUsers', function () {
+        socket.emit('onlineUsers', onlineUsers);
+      });
+    /**
+     * Evento desconectar, mandamos mensaje a consola.
+     */
     socket.on('disconnect', function() {
-        console.log('User disconnected');
+        onlineUsers.splice(onlineUsers.indexOf(socket.user), 1);
+        io.emit('remove user', socket.user);
+        console.log('JOffline: user disconnected');
+      
+      });
+    /**
+     * Evento que se emite cuando un nuevo cliente se conecta e
+     * informa al resto de usuarios que se ha conectado. Recibe  
+     * de parámetros al nuevo usuario
+     */
+    socket.on('newUser', function (nuser) {
+        socket.user = nuser;
+        onlineUsers.push(nuser);
+        io.emit('newUser', nuser);
       });
   
   });

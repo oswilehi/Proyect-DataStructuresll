@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var sha256 = require('sha256');
-
-
 //Schema
 var User = require('../schemas/userSchema');
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

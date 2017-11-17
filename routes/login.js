@@ -36,6 +36,5 @@ router.post('/', function(req, res, next){
     }  
   }); 
 });
-//para que empiece el io en el chat:
-//require('./chat.js')()
+
 module.exports = router;
