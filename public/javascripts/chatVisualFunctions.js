@@ -18,3 +18,18 @@ function setSessionStorage(token, actualUser){
     console.log(window.sessionStorage);
     
 }
+function showMessages(json){
+    var mensaje = JSON.parse(json);
+    var table = document.getElementById("chat");
+t
+    table.innerHTML = "";
+
+    for(var msg in mensaje)
+    {
+        table.appendChild('<blockquote><h6>' + msg.sender + ':</h6>' + 
+        msg.message +'</blockquote>');
+       
+ 
+    }
+    
+}

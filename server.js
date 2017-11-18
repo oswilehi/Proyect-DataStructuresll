@@ -35,7 +35,7 @@ io.sockets.on('connection', function(socket){
      * y devuelve al cliente el mismo mensaje,
      */
     socket.on('sendMessage', function(data){
-      io.sockets.emit('sendMessage', {msg:data});
+      io.sockets.emit('output', {msg: data, nick: socket.nickname});
       
     });
 
@@ -53,7 +53,6 @@ io.sockets.on('connection', function(socket){
      * Evento desconectar, mandamos mensaje a consola.     
     */
     socket.on('disconnect', function() {
-        console.log("PRUEBA: " + onlineUsers);
         onlineUsers.splice(onlineUsers.indexOf(socket.user), 1);
         console.log("PRUEBA: " + onlineUsers);
         io.emit('remove user', socket.user);

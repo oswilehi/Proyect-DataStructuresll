@@ -2,23 +2,17 @@
 
 <html>
   <head>
+    <meta charset="UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="/jquery/jqueryChat.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <title>Login JOnline</title>
-    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
- 
-    <script src="/public/javascripts/chatVisualFunctions.js"></script>
-    
+    <script src="/javascripts/chatVisualFunctions.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/moment-with-locales.min.js"></script>
+    <title>Login JOnline</title>   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
       #chat{
         position: relative;
@@ -46,7 +40,7 @@
                 CHAT
               </div>              
               <div id="hiddenM" style="display:none;">{{arrayMsg}} </div>
-              <div id="chat" class="panel-body">{{arrayMsg}}</div> <!--Contenido del chat-->
+              <div id="chat" class="panel-body"></div> <!--Contenido del chat-->
             </div>
     <!--Formulario para mandar los mensajes-->
             <div>
@@ -92,19 +86,17 @@
                 var $chat =$('#chat'); 
                 var $listUsers=$('#users'); //ul
                 var $list = $('#usersDiv'); //div
+                var $messages = $('#hiddenM');
 
                 //Agrega mensajes al div de chat correspondiente
-                function appendMessages(msg){
-                  var date = moment(new Date(msg.date)).calendar();
-                  var html = '<div class="small-11">' +'<blockquote><h6>' + msg.username + ':</h6>' + 
-                           msg.message +'<cite>' + date + '</cite></blockquote>' + '</div>';
-                  $chat.append(html);
-
+                function appendMessages(){
+                  alert($messages.val())
+                  $chat.append($messages.val());
+                  
                 }
                 //Evento para mostrar mensajes
                 $listUsers.click(function(e){
-                  e.preventDefault();
-                  
+                  e.preventDefault();                  
                   reciever = e.target.parentNode.id;
                   alert(x + " " + reciever);
                   if(x!= '' && reciever!= ''){ //usuario y amigo chekeados
@@ -115,14 +107,13 @@
                       dataType: 'json',
                       contentType:'application/json; charset=UTF-8',
                       success : function(){
-                        alert(latestMessages);
-                        socket.emit('historial',latestMessages);
-                        
+                        showMessages($messages.val());
                       },
                       error:function(){
                         
                       }
                     });
+                    showMessages($messages.val());
                   }
                 }); 
 
@@ -134,7 +125,7 @@
                     $.ajax({
                       method: 'POST',
                       url: '/Chat', 
-                      data: JSON.stringify({}),
+                      data: JSON.stringify({message: $message.val(), sender: window.sessionStorage.actualUser, receiver:reciever}),
                       dataType: 'json',
                       contentType: 'application/json; charset=UTF-8',
                       success: function() {
@@ -147,9 +138,25 @@
                     });            
                   }
                 });
+                /**
+                 * Emitimos un evento de tipo 'output' cada vez
+                 * que se presiona 'Enter' en el input  y enviamos
+                 * su contenido como mensaje al servidor.
+                 */
+                 $message.keyup(function (evt) {
+                  if (evt.keyCode === 13) {
+                    
+                    socket.emit('sendMessage', $message.val());
+                    $message.val('');
+                  }
+                });
                 
-                socket.on('sendMessage', function(data){
-                    appendMessages(data);
+                socket.on('output', function(data){
+                  var html = '<blockquote><h6>' + data.nick + ':</h6>' + 
+                           data.msg +'</blockquote>';
+                  
+                  $chat.append(html);
+                    
                   });
                 /**
                * Cuando el servidor envia la lista de usuarios conectados.
@@ -158,7 +165,6 @@
                * @param  users Array con usuarios conectados en el momento
                */
                 socket.on('onlineUsers', function (users) {
-                  console.log(users.length + ' users on');
                   $listUsers.html('');                  
                   for (let i=0; i<users.length; i++) 
                   {
@@ -172,8 +178,7 @@
                * cuando un usuario se ha conectado
                * @param nuser el usuario recien conectado
                */
-               socket.on('newUser', function (nuser) {
-                 
+               socket.on('newUser', function (nuser) {                 
                   var linuser = '<li id="'+ nuser +'" + name="' + nuser + '">'+ '<a href="/Chat/">' + nuser+'</a></li>';
                   $listUsers.append(linuser);
                 });
@@ -185,25 +190,11 @@
                * @param nuser El usuarios que se acaba de desconectar
                */
                 socket.on('remove user', function (nuser) {
-                  socket.emit('onlineUsers');
+                  //socket.emit('onlineUsers');
                   $('#' + nuser).remove();
                 });
       
-                /**
-                 * Emitimos un evento de tipo 'coutput' cada vez
-                 * que se presiona 'Enter' en el input  y enviamos
-                 * su contenido como mensaje al servidor.
-                 */
-                 $message.keyup(function (evt) {
-                  if (evt.keyCode === 13) {
-                    var nmsg = {
-                      username : x,
-                      message : $message.val()
-                    }
-                    socket.emit('sendMessage', nmsg);
-                    $message.val('');
-                  }
-                });
+                
 
 
                 /**
@@ -214,7 +205,7 @@
                */               
                socket.on('historial', function (messages) {
                   for (var i = messages.length - 1; i >= 0; i--) {
-                    appendMessages(messages[i]);
+                    //appendMessages(messages[i]);
                   };
                 });
 
@@ -224,14 +215,14 @@
                * en este momento.
                */
                 socket.emit('onlineUsers');
-      
+                //socket.emit('historial'); 
                 /**
                * Emitimos el evento 'new user' para que el servidor
                * informe a todos los usuarios que estamos en linea.
                */
                 socket.emit('newUser', x);
 
-                socket.emit('historial'); 
+                
                 
                 
                
