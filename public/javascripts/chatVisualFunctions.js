@@ -20,16 +20,16 @@ function setSessionStorage(token, actualUser){
 }
 function showMessages(json){
     var mensaje = JSON.parse(json);
-    var table = document.getElementById("chat");
-t
-    table.innerHTML = "";
-
-    for(var msg in mensaje)
-    {
-        table.appendChild('<blockquote><h6>' + msg.sender + ':</h6>' + 
-        msg.message +'</blockquote>');
-       
- 
+    var div = document.getElementById("chat");
+    div.innerHTML = "";
+    if(json!=''){
+        for(var msg in mensaje)
+            {
+                div.innerHTML+='<blockquote><h6>' + mensaje.sender + ':</h6>' + 
+                mensaje.mensaje +'</blockquote>'
+         
+            }
     }
+    
     
 }

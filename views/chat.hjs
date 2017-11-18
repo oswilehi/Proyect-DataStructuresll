@@ -106,8 +106,8 @@
                       url: '/Chat/'+ x +'&&' + reciever,
                       dataType: 'json',
                       contentType:'application/json; charset=UTF-8',
-                      success : function(){
-                        showMessages($messages.val());
+                      success : function(data){
+                        showMessages(data);
                       },
                       error:function(){
                         
@@ -153,7 +153,7 @@
                 });
                 
                 socket.on('output', function(data){
-                  var html = '<blockquote><h6>' + data.nick + ':</h6>' + 
+                  var html = '<blockquote><h6>' + x + ':</h6>' + 
                            data.msg +'</blockquote>';
                   
                   $chat.append(html);
