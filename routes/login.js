@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var sha256 = require('sha256');
+//https://www.npmjs.com/package/jsonwebtoken
 var jwt = require('jsonwebtoken');
 var password = "passwordForJWT";
 
