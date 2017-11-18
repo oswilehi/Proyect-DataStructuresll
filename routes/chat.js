@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('jsonwebtoken');
 
 //Edge
 var edge = require('edge');
@@ -15,7 +16,11 @@ router.get('/', function(req, res, next) {
 //Guardar mensajes en la base de datos
 router.post('/',function(req,res,next){
     console.log('Entró a registrar el nuevo msg');
-    console.log(req.body);
+    console.log(req.body.token);
+
+    var verifyJWT = jwt.verify(req.body.token, "passwordForJWT");
+
+    console.log(verifyJWT);
 
     var messageEncrypted;
     var cifrar = edge.func({
@@ -48,7 +53,7 @@ router.post('/',function(req,res,next){
     });
     newMessage.save(function(error, result){
         if(error)throw error;
-        console.log("The message was succesfull added");
+        console.log("The message was succesfully added");
         console.log(result);
     });
     res.status(204).end();
