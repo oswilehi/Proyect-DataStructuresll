@@ -126,7 +126,7 @@
                     $.ajax({
                       method: 'POST',
                       url: '/Chat', 
-                      data: JSON.stringify({message: $message.val(), sender: window.sessionStorage.actualUser}),
+                      data: JSON.stringify({message: $message.val(), sender: window.sessionStorage.actualUser, token: window.sessionStorage.token}),
                       dataType: 'json',
                       contentType: 'application/json; charset=UTF-8',
                       success: function() {

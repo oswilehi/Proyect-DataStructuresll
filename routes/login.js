@@ -3,7 +3,6 @@ var router = express.Router();
 var sha256 = require('sha256');
 //https://www.npmjs.com/package/jsonwebtoken
 var jwt = require('jsonwebtoken');
-var password = "passwordForJWT";
 
 //Schema
 var User = require('../schemas/userSchema');
@@ -27,7 +26,9 @@ router.post('/', function(req, res, next){
     else {
       // Si la contrasena typeada coincide con la guardada se le permite el acceso al chat
       if (sha256(req.body.password) === data[0].password){
-          var token = jwt.sign({user: req.body.username}, password);
+          var token = jwt.sign({user: req.body.username}, "passwordForJWT");
+          var prueba = jwt.verify(token, "passwordForJWT");
+          console.log(prueba);
           res.render('chat', {token : token.toString(), actualUser: req.body.username});
       }
           
