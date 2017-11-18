@@ -15,9 +15,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next){
   // Verificar que el usuario exista ya en el chat
   User.find({user: req.body.username}, function(error, data){
-    if (error){
-
-    }
+    if (error) throw error;
     // Si no se encontro nada, pues se le dice al usuario que pruebe de nuevo
     else if(!data.length){
       res.render('login', {msg : "Su usuario o contraseña no son correctos, pruebe de nuevo", visible: true});
@@ -30,8 +28,7 @@ router.post('/', function(req, res, next){
           var prueba = jwt.verify(token, "passwordForJWT");
           console.log(prueba);
           res.render('chat', {token : token.toString(), actualUser: req.body.username});
-      }
-          
+      }          
       else
           res.render('login', {msg : "Su usuario o contraseña no son correctos, pruebe de nuevo", visible: true});
     }  
